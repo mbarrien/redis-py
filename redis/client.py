@@ -1535,9 +1535,17 @@ class StrictRedis(object):
         "Move ``value`` from set ``src`` to set ``dst`` atomically"
         return self.execute_command('SMOVE', src, dst, value)
 
-    def spop(self, name):
-        "Remove and return a random member of set ``name``"
-        return self.execute_command('SPOP', name)
+    def spop(self, name, number=None):
+        """
+        If ``number`` is None, removes and returns a random member of
+        set ``name``.
+        
+        If ``number`` is supplied, removes ``number`` random members of
+        set ``name`` and returns them as a list. Note this is only
+        available when running Redis 3.2+.
+        """
+        args = number and [number] or []
+        return self.execute_command('SPOP', name, *args)
 
     def srandmember(self, name, number=None):
         """
